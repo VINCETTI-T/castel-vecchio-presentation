@@ -143,6 +143,37 @@ svg{display:block;overflow:visible}
 #tip .r{display:flex;justify-content:space-between;gap:18px}
 #tip .r span:last-child{font-weight:600}
 
+/* ---------- password gate ---------- */
+#gate{
+  position:fixed;inset:0;z-index:200;
+  background:var(--navy-deep);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .4s;
+}
+#gate.off{opacity:0;pointer-events:none}
+#gate-box{
+  background:#fff;padding:48px 52px;width:420px;
+  border-top:3px solid var(--gold);text-align:center;
+}
+#gate-box h2{font-size:22px;color:var(--navy);font-weight:300;margin-bottom:8px}
+#gate-box .sub{font-size:14px;color:var(--grey);margin-bottom:28px}
+#gate-box input{
+  width:100%;padding:14px 16px;font-size:16px;
+  border:1px solid var(--line);background:var(--cream);
+  color:var(--ink);text-align:center;letter-spacing:.1em;
+  outline:none;font-family:inherit;
+}
+#gate-box input:focus{border-color:var(--gold)}
+#gate-box input.error{border-color:#c0392b;animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#gate-box button{
+  margin-top:16px;padding:12px 32px;font-size:14px;
+  background:var(--navy);color:#fff;border:none;
+  cursor:pointer;font-family:inherit;letter-spacing:.06em;
+}
+#gate-box button:hover{background:var(--navy-deep)}
+#gate-box .err{color:#c0392b;font-size:13px;margin-top:12px;display:none}
+
 /* ---------- nav ---------- */
 #nav{
   position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
@@ -167,6 +198,16 @@ svg{display:block;overflow:visible}
 </head>
 <body>
 
+<div id="gate">
+  <div id="gate-box">
+    <h2>Accès protégé</h2>
+    <div class="sub">Entrez le mot de passe pour accéder à la présentation</div>
+    <input type="password" id="pwd-input" placeholder="Mot de passe" autofocus>
+    <button id="pwd-btn">Entrer</button>
+    <div class="err" id="pwd-err">Mot de passe incorrect</div>
+  </div>
+</div>
+
 <div id="stage">
 
 <!-- ============ 1 — COUVERTURE ============ -->
@@ -183,7 +224,7 @@ svg{display:block;overflow:visible}
     </div>
   </div>
   <div class="foot">
-    <span>Données 2025 réelles · projections 2027 indicatives, à affiner avec le cabinet ROMEI</span>
+    <span>Données 2025 réelles · projections 2027 indicatives, à affiner avec le cabinet ROMEI · CONFIDENTIEL</span>
     <span>01</span>
   </div>
 </section>
@@ -425,7 +466,7 @@ svg{display:block;overflow:visible}
           <div style="font-size:13px;color:var(--grey);margin-top:7px">EBE Groupe dès 2027 — un doublement</div>
         </div>
         <div style="font-size:13px;color:var(--grey);line-height:1.6;padding-bottom:3px">
-          Service de dette estimé :<br>61 % de l'EBE prévisionnel.
+          Service de dette estimé :<br>55 % de l'EBE prévisionnel<br><span style="font-size:11px;color:var(--gold)">(CADEC à taux 0 inclus)</span>
         </div>
       </div>
     </div>
@@ -494,6 +535,12 @@ svg{display:block;overflow:visible}
     </div>
     <div class="note" style="text-align:right;max-width:330px">
       Dossier complet — volumes 1 à 3 et consolidé —<br>disponible sur demande.
+    </div>
+  </div>
+  <div style="position:absolute;bottom:70px;left:90px;right:90px;background:rgba(31,53,82,0.06);padding:14px 18px;border-left:3px solid var(--gold)">
+    <div style="font-size:12px;color:var(--grey);line-height:1.5">
+      <b style="color:var(--navy)">CONFIDENTIEL</b> — Ce document est la propriété intellectuelle du Groupe Vincetti / Hôtel Fesch & Spa.
+      Il ne peut être reproduit, transmis ou diffusé sans autorisation écrite préalable.
     </div>
   </div>
   <div class="foot"><span>Groupe Vincetti · Ajaccio</span><span>10</span></div>
@@ -955,8 +1002,10 @@ const row = (a, b) => `<div class="r"><span>${a}</span><span>${b}</span></div>`;
   const s = document.getElementById('svg-donut');
   const CX = 120, CY = 122, R = 84, SW = 30;
   const D = [
-    { l: 'Financement bancaire', v: 5700000, c: '#1F3552',
-      t: `<b>Financement bancaire</b>Murs, fonds, frais d'acquisition et travaux.${row('Montant', '5 700 000 €')}${row('Part', '74,0 %')}${row('Durée et taux', 'à discuter')}` },
+    { l: 'Financement bancaire', v: 5200000, c: '#1F3552',
+      t: `<b>Financement bancaire</b>Murs, fonds, frais d'acquisition et travaux.${row('Montant', '5 200 000 €')}${row('Part', '67,5 %')}${row('Durée et taux', 'à discuter')}` },
+    { l: 'CADEC', v: 500000, c: '#3E7C8C',
+      t: `<b>CADEC — Crédit d'Accompagnement au Développement Economique</b>Prêt à taux zéro, accord oral obtenu.${row('Montant', '500 000 €')}${row('Part', '6,5 %')}${row('Durée', '10 ans')}${row('Taux', '0 %')}${row('Statut', 'accord oral')}` },
     { l: 'Prêt vendeur', v: 2000000, c: '#9C7A3C',
       t: `<b>Prêt vendeur — M. Jodineau</b>Déjà négocié avec le vendeur.${row('Montant', '2 000 000 €')}${row('Part', '26,0 %')}${row('Durée', '10 ans')}${row('Taux', '3 %')}${row('Différé', '1 an')}` }
   ];
@@ -979,7 +1028,7 @@ const row = (a, b) => `<div class="r"><span>${a}</span><span>${b}</span></div>`;
   s.appendChild(el('text', { x: CX, y: CY + 16, 'text-anchor': 'middle', 'font-size': 12, fill: '#6B6B6B' })).textContent = 'total';
 
   D.forEach((d, i) => {
-    const y = 78 + i * 46;
+    const y = 68 + i * 46;
     s.appendChild(el('rect', { x: 236, y, width: 12, height: 12, fill: d.c }));
     s.appendChild(el('text', { x: 256, y: y + 11, 'font-size': 13.5, fill: '#1F3552', 'font-weight': 600 })).textContent = d.l;
     s.appendChild(el('text', { x: 256, y: y + 29, 'font-size': 13, fill: '#6B6B6B' }))
@@ -1070,6 +1119,33 @@ addEventListener('resize', fit);
 fit();
 
 setTimeout(() => hint.style.opacity = '0', 5000);
+
+/* =======================================================
+   Password gate
+   ======================================================= */
+(function(){
+  const gate = document.getElementById('gate');
+  const input = document.getElementById('pwd-input');
+  const btn = document.getElementById('pwd-btn');
+  const err = document.getElementById('pwd-err');
+  const HASH = 'd8a3b5c7e9f1a2b4c6d8e0f2a4b6c8d0'; // placeholder, checked client-side
+
+  function check(){
+    if(input.value === 'FESCH2K2600Z'){
+      gate.classList.add('off');
+      setTimeout(() => gate.remove(), 500);
+    } else {
+      err.style.display = 'block';
+      input.classList.add('error');
+      input.value = '';
+      input.focus();
+      setTimeout(() => { input.classList.remove('error'); }, 400);
+    }
+  }
+
+  btn.addEventListener('click', check);
+  input.addEventListener('keydown', e => { if(e.key === 'Enter') check(); });
+})();
 </script>
 </body>
 </html>
